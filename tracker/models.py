@@ -1,16 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-# Справочник статусов из ТЗ [cite: 19]
-STATUS_CHOICES = [
-    ('new', 'Новая'),
-    ('in_progress', 'В работе'),
-    ('verify', 'На проверке'),
-    ('closed', 'Закрыта'),
-    ('canceled', 'Отменена'),
-]
-
-# Модель Объекта/Проекта [cite: 17]
+# Модель Объекта/Проекта
 class Project(models.Model):
     name = models.CharField("Название объекта", max_length=200)
     description = models.TextField("Описание", blank=True)
@@ -24,8 +15,17 @@ class Project(models.Model):
         verbose_name = "Строительный объект"
         verbose_name_plural = "Строительные объекты"
 
-# Модель Дефекта 
+# Модель Дефекта
 class Defect(models.Model):
+    # ПЕРЕМЕННЫЕ ПЕРЕНЕСЕНЫ ВНУТРЬ КЛАССА
+    STATUS_CHOICES = [
+        ('new', 'Новая'),
+        ('in_progress', 'В работе'),
+        ('verify', 'На проверке'),
+        ('closed', 'Закрыта'),
+        ('canceled', 'Отменена'),
+    ]
+    
     PRIORITY_CHOICES = [
         (1, 'Низкий'),
         (2, 'Средний'),
@@ -34,8 +34,8 @@ class Defect(models.Model):
 
     title = models.CharField("Заголовок дефекта", max_length=200)
     description = models.TextField("Описание проблемы")
-    image = models.ImageField("Фото дефекта", upload_to='defects/', blank=True, null=True) # Поддержка вложений 
-    status = models.CharField("Статус", max_length=20, choices=STATUS_CHOICES, default='new')
+    image = models.ImageField("Фото дефекта", upload_to='defects/', blank=True, null=True) 
+    status = models.CharField("Статус", max_length=20, choices=STATUS_CHOICES, default='new') # Использование переменной внутри класса
     priority = models.IntegerField("Приоритет", choices=PRIORITY_CHOICES, default=2)
     
     # Связи

@@ -1,0 +1,61 @@
+{% extends "admin/base_site.html" %} 
+{% load static %}
+
+{% block content %}
+<div id="content-main">
+    <div class="module">
+        <h2>Список дефектов</h2>
+        <div class="submit-row" style="margin-bottom: 20px;">
+            <a href="{% url 'export_csv' %}{{ request.GET.urlencode }}" class="button">
+                Экспорт в CSV
+            </a>
+            <a href="{% url 'defect_add' %}" class="button default">
+                + Добавить дефект
+            </a>
+        </div>
+    </div>
+
+    <div class="module">
+        <h2>Фильтрация и Поиск</h2>
+        <form method="get">
+            {{ filter.form.as_p }}
+            <div class="submit-row">
+                <button type="submit" class="default">Применить</button>
+                <a href="." class="button">Сбросить</a>
+            </div>
+        </form>
+    </div>
+    
+    {% if defects %}
+    <div class="module">
+        <table id="result_list">
+            <thead>
+                <tr>
+                    <th>Заголовок</th>
+                    <th>Объект</th>
+                    <th>Приоритет</th>
+                    <th>Статус</th>
+                    <th>Исполнитель</th>
+                    <th>Дата создания</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for defect in defects %}
+                <tr class="{% cycle 'row1' 'row2' %}">
+                    <td><a href="{% url 'defect_add' %}?id={{ defect.id }}">{{ defect.title }}</a></td>
+                    <td>{{ defect.project }}</td>
+                    <td>{{ defect.get_priority_display }}</td>
+                    <td>{{ defect.get_status_display }}</td>
+                    <td>{{ defect.assigned_to.username }}</td>
+                    <td>{{ defect.created_at|date:"Y-m-d H:i" }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p>Дефектов не найдено. Нажмите "Добавить дефект", чтобы создать первый.</p>
+    {% endif %}
+
+</div>
+{% endblock %}
